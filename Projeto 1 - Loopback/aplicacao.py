@@ -12,6 +12,8 @@ print("comecou")
 
 from enlace import *
 import time
+from PIL import Image
+from array import array
 
 # voce deverá descomentar e configurar a porta com através da qual ira fazer a
 # comunicaçao
@@ -46,11 +48,13 @@ def main():
     #como fazer isso
     print ("gerando dados para transmissao :")
   
-   
-    ListTxBuffer =list()
-    for x in range(0,20):
-        ListTxBuffer.append(x)
-    txBuffer = bytes(ListTxBuffer)
+    with open("picture.jpg", "rb") as imageFile:
+        f = imageFile.read()
+        img = bytearray(f)
+#    ListTxBuffer =list()
+#    for x in range(0,20):
+#        ListTxBuffer.append(x)
+    txBuffer = bytes(img)
     txLen    = len(txBuffer)
     print(txLen)
 
