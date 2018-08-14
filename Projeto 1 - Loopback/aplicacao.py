@@ -48,13 +48,13 @@ def main():
     #como fazer isso
     print ("gerando dados para transmissao :")
   
-    with open("picture.jpg", "rb") as imageFile:
-        f = imageFile.read()
-        img = bytearray(f)
-#    ListTxBuffer =list()
-#    for x in range(0,20):
-#        ListTxBuffer.append(x)
-    txBuffer = bytes(img)
+#    with open("timao.png", "rb") as imageFile:
+#        f = imageFile.read()
+#        img = bytearray(f)
+    ListTxBuffer =list()
+    for x in range(0,20):
+        ListTxBuffer.append(x)
+    txBuffer = bytes(ListTxBuffer)
     txLen    = len(txBuffer)
     print(txLen)
 
@@ -68,11 +68,16 @@ def main():
    
 
     # Faz a recepção dos dados
+    
     print ("Recebendo dados .... ")
     bytesSeremLidos=com.rx.getBufferLen()
-  
-        
     rxBuffer, nRx = com.getData(txLen)
+    x = open('Corinthians.png','wb')
+    x.write(rxBuffer)
+    x.close()
+    
+
+   
 
     # log
     print ("Lido              {0} bytes ".format(nRx))
