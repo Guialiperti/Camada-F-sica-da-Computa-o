@@ -29,6 +29,7 @@ import time
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 serialName = "COM3"                  # Windows(variacao de)
 
+timeforbyte= 0.0009868144989013672/215
 
 
 print("porta COM aberta com sucesso")
@@ -84,7 +85,7 @@ def main(imagem):
         img = bytearray(f)
     txBuffer = bytes(img)
     txLen    = len(txBuffer)
-    print(txLen)
+    print("tempo esperado : {0} bytes".format(timeforbyte*txLen))
 
     # Transmite dado
     print("tentado transmitir .... {0} bytes".format(txLen))
