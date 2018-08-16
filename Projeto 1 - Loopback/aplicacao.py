@@ -48,19 +48,19 @@ def main():
     #como fazer isso
     print ("gerando dados para transmissao :")
   
-#    with open("timao.png", "rb") as imageFile:
-#        f = imageFile.read()
-#        img = bytearray(f)
-    ListTxBuffer =list()
-    for x in range(0,20):
-        ListTxBuffer.append(x)
-    txBuffer = bytes(ListTxBuffer)
+    with open("timao.png", "rb") as imageFile:
+        f = imageFile.read()
+        img = bytearray(f)
+#    ListTxBuffer =list()
+ #   for x in range(0,20):
+ #       ListTxBuffer.append(x)
     txLen    = len(txBuffer)
+    txBuffer = bytes(img)
     print(txLen)
 
     # Transmite dado
     print("tentado transmitir .... {0} bytes".format(txLen))
-    com.sendData(txBuffer)
+    com.sendData(img)
 
         
     # Atualiza dados da transmissão

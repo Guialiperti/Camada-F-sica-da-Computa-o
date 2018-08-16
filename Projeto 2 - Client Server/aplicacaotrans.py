@@ -5,16 +5,17 @@
 # Camada Física da Computação
 #Carareto
 #17/02/2018
-#  Aplicação
+#  Aplicação - Transmissor
 ####################################################
 
 print("comecou")
 
 from enlace import *
-from interface import *
 import time
 from PIL import Image
 from array import array
+import tkinter as tk
+from tkinter.filedialog import askopenfilename
 
 # voce deverá descomentar e configurar a porta com através da qual ira fazer a
 # comunicaçao
@@ -31,9 +32,37 @@ serialName = "COM3"                  # Windows(variacao de)
 
 print("porta COM aberta com sucesso")
 
+class Application(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.pack()
+        self.create_widgets()
+
+    def create_widgets(self):
+        
+        self.selectbutton = tk.Button(self, text="Selecionar imagem", fg="black",
+                              command=self.selectimage)
+
+        self.selectbutton.pack(side="top")              
+
+        self.sendbutton = tk.Button(self, text="Enviar imagem", fg="black",
+                              command=self.sendimage)
+        self.sendbutton.pack(side="top")
+
+        self.quit = tk.Button(self, text="Fechar janela", fg="black",
+                              command=root.destroy)
+        self.quit.pack(side="bottom")
+
+    def selectimage(self):
+        self.filename = askopenfilename() 
+        print("Imagem selecionada")   
+        
+    def sendimage(self):
+        root.destroy()
+        print("Mensagem enviada")
 
 
-def main():
+def main(imagem):
     # Inicializa enlace ... variavel com possui todos os metodos e propriedades do enlace, que funciona em threading
     com = enlace(serialName)
 
@@ -49,13 +78,10 @@ def main():
     #como fazer isso
     print ("gerando dados para transmissao :")
 
-    with open("timao.png", "rb") as imageFile:
+    with open(imagem, "rb") as imageFile:
         f = imageFile.read()
         img = bytearray(f)
-    ListTxBuffer =list()
-    for x in range(0,20):
-        ListTxBuffer.append(x)
-    txBuffer = bytes(ListTxBuffer)
+    txBuffer = bytes(img)
     txLen    = len(txBuffer)
     print(txLen)
 
@@ -68,25 +94,6 @@ def main():
     txSize = com.tx.getStatus()
    
 
-    # Faz a recepção dos dados
-    
-#    print ("Recebendo dados .... ")
- #   bytesSeremLidos=com.rx.getBufferLen()
-  #  rxBuffer, nRx = com.getData(txLen)
- #   x = open('Corinthians.png','wb')
-  #  x.write(rxBuffer)
-   # x.close()
-    
-
-   
-
-    # log
-#    print ("Lido              {0} bytes ".format(nRx))
-    
-#    print (rxBuffer)
-
-    
-
     # Encerra comunicação
     print("-------------------------")
     print("Comunicação encerrada")
@@ -95,4 +102,7 @@ def main():
 
     #so roda o main quando for executado do terminal ... se for chamado dentro de outro modulo nao roda
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    app = Application(master=root)
+    app.mainloop()
+    main(app.filename)

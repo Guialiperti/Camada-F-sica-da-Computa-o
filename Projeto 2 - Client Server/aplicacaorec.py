@@ -47,20 +47,6 @@ def main():
     # voce pode criar o seu carregando os dados de uma imagem. Tente descobrir
     #como fazer isso
     print ("gerando dados para transmissao :")
-  
-#    with open("timao.png", "rb") as imageFile:
-#        f = imageFile.read()
-#        img = bytearray(f)
-    ListTxBuffer =list()
-    for x in range(0,20):
-        ListTxBuffer.append(x)
-    txBuffer = bytes(ListTxBuffer)
-    txLen    = len(txBuffer)
-    print(txLen)
-
-#    # Transmite dado
-#    print("tentado transmitir .... {0} bytes".format(txLen))
-#    com.sendData(txBuffer)
 
         
     # Atualiza dados da transmissão
@@ -71,13 +57,11 @@ def main():
     
     print ("Recebendo dados .... ")
     bytesSeremLidos=com.rx.getBufferLen()
-    rxBuffer, nRx = com.getData(txLen)
+    rxBuffer, nRx = com.getData()
     x = open('Corinthians.png','wb')
     x.write(rxBuffer)
     x.close()
-    
-
-   
+      
 
     # log
     print ("Lido              {0} bytes ".format(nRx))

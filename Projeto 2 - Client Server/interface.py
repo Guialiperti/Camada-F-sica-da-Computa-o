@@ -27,6 +27,7 @@ class Application(tk.Frame):
         print("Imagem selecionada")   
         
     def sendimage(self):
+        root.destroy()
         print("Mensagem enviada")
  
 
