@@ -16,6 +16,7 @@ from PIL import Image
 from array import array
 import tkinter as tk
 from tkinter.filedialog import askopenfilename
+import time
 
 # voce deverá descomentar e configurar a porta com através da qual ira fazer a
 # comunicaçao
@@ -87,7 +88,9 @@ def main(imagem):
 
     # Transmite dado
     print("tentado transmitir .... {0} bytes".format(txLen))
+    starttime = time.time()
     com.sendData(txBuffer)
+
 
         
     # Atualiza dados da transmissão
@@ -98,6 +101,8 @@ def main(imagem):
     print("-------------------------")
     print("Comunicação encerrada")
     print("-------------------------")
+    finaltime = time.time() - starttime
+    print("Tempo da transmissão : {0} segundos".format(finaltime))
     com.disable()
 
     #so roda o main quando for executado do terminal ... se for chamado dentro de outro modulo nao roda
