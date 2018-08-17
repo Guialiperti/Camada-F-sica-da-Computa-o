@@ -28,9 +28,7 @@ import time
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 serialName = "COM3"                  # Windows(variacao de)
-
-timeforbyte= 0.0009868144989013672/215
-
+baudrate    = 115200
 
 print("porta COM aberta com sucesso")
 
@@ -64,7 +62,12 @@ class Application(tk.Frame):
         print("Mensagem enviada")
 
 
+def tempo_teorico(n_bytes,baudrate):
+    t = (n_bytes*10)/baudrate
+    return t
+
 def main(imagem):
+    
     # Inicializa enlace ... variavel com possui todos os metodos e propriedades do enlace, que funciona em threading
     com = enlace(serialName)
 
@@ -85,9 +88,9 @@ def main(imagem):
         img = bytearray(f)
     txBuffer = bytes(img)
     txLen    = len(txBuffer)
-    print("tempo esperado : {0} bytes".format(timeforbyte*txLen))
 
     # Transmite dado
+    print(" Tamanho da imagem: {0} bytes".format(txLen))
     print("tentado transmitir .... {0} bytes".format(txLen))
     starttime = time.time()
     com.sendData(txBuffer)
@@ -103,6 +106,7 @@ def main(imagem):
     print("Comunicação encerrada")
     print("-------------------------")
     finaltime = time.time() - starttime
+    print("Tempo esperado da transmissão : {0} bytes".format(tempo_teorico(txLen,baudrate)))
     print("Tempo da transmissão : {0} segundos".format(finaltime))
     com.disable()
 

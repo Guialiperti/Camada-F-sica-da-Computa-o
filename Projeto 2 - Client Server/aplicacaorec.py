@@ -25,12 +25,15 @@ from array import array
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 serialName = "COM3"                  # Windows(variacao de)
-
+baudrate    = 115200
 
 
 print("porta COM aberta com sucesso")
 
 
+def tempo_teorico(n_bytes,baudrate):
+    t = (n_bytes*10)/baudrate
+    return t
 
 def main():
     # Inicializa enlace ... variavel com possui todos os metodos e propriedades do enlace, que funciona em threading
@@ -46,7 +49,7 @@ def main():
     # a seguir ha um exemplo de dados sendo carregado para transmissao
     # voce pode criar o seu carregando os dados de uma imagem. Tente descobrir
     #como fazer isso
-    print ("gerando dados para transmissao :")
+#    print ("gerando dados para transmissao :")
 
         
     # Atualiza dados da transmissão
@@ -65,6 +68,7 @@ def main():
 
     # log
     print ("Lido              {0} bytes ".format(nRx))
+    print("Tempo esperado: {0} segundos ".format(tempo_teorico(nRx,baudrate)))
     
     print (rxBuffer)
 
