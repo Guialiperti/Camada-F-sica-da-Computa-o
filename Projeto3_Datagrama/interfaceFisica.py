@@ -8,6 +8,7 @@
 
 # Importa pacote de comunicação serial
 import serial
+import time
 
 # importa pacote para conversão binário ascii
 import binascii
@@ -48,8 +49,12 @@ class fisica(object):
     def flush(self):
         """ Clear serial data
         """
+        starttime = time.time()
         self.port.flushInput()
         self.port.flushOutput()
+        finaltime = time.time() - starttime
+
+        return finaltime
 
     def encode(self, data):
         """ Encode TX as ASCII data for transmission
@@ -73,8 +78,8 @@ class fisica(object):
         sides of communication.
         """
         nTx = self.port.write(self.encode(txBuffer))
-        self.port.flush()
-        return(nTx/2)
+        finaltime = self.port.flush()
+        return(nTx/2, finaltime)
 
     def read(self, nBytes):
         """ Read nBytes from the UART com port

@@ -26,8 +26,8 @@ import time
 # se estiver usando windows, o gerenciador de dispositivos informa a porta
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
-#serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM3"                  # Windows(variacao de)
+serialName = "/dev/tty.usbmodem1461" # Mac    (variacao de)
+#serialName = "COM3"                  # Windows(variacao de)
 baudrate    = 115200
 
 print("porta COM aberta com sucesso")

@@ -53,7 +53,8 @@ class enlace(object):
     def sendData(self, data):
         """ Send data over the enlace interface
         """
-        self.tx.sendBuffer(data)
+        pacote = self.tx.cria_package(data)
+        self.tx.sendBuffer(pacote)
 
     def getData(self):
         """ Get n data over the enlace interface
@@ -61,5 +62,6 @@ class enlace(object):
         """
         print('entrou na leitura e tentara ler ')
         data , size= self.rx.getNData()
+        payload = self.rx.desfaz_package(data)
        
-        return(data, len(data))
+        return(payload, len(payload))

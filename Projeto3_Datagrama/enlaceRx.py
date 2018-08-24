@@ -103,7 +103,8 @@ class RX(object):
         
         #if self.getBufferLen() < size:
             #print("ERROS!!! TERIA DE LER %s E LEU APENAS %s", (size,temPraLer))
-        size = 0    
+        size = 0   
+
         while(self.getBufferLen() > size or self.getBufferLen() == 0):
             time.sleep(2)
             size = self.getBufferLen()
@@ -114,5 +115,41 @@ class RX(object):
         """ Clear the reception buffer
         """
         self.buffer = b""
+    
+    def desfaz_package(self, package):
+        #Faz o desempacotamento dos dados baseado-se no protocolo GG7.
+        #Separa o payload do restante e verifica se o tamanho do payload esta correto
+        head_size = 12
+        found_eop = False
+        byte_stuff = bytes.fromhex("AA")
+        payload_size_loc = [0,3]
+        eop = bytes.fromhex("FF FE FD FC")
+        head = package[0:11]
+        package = package[12:-1]
+        payload_size = int.from_bytes(head[payload_size_loc[0]:payload_size_loc[1]], byteorder = "little")
+        for i in range(len(package)):
+            if package[i:i+3] == eop:
+                if package[i-1] == byte_stuff:
+                    #retira os bytes stuff
+                    p1 = package[0:i-1]
+                    p2 = package[i:-1]
+                    package = p1 + p2
+                else:
+                    print("EOP encontrado na posição:{0}".format(i))
+                    found_eop = True
+                    package = package[0:-5]
+                    if len(package) != payload_size:
+                        print("ERRO! Número de Bytes do Payload diferentes do informado no HEAD. Bytes Payload recebido:{0}".format(len(package)))
+                        print("Bytes que foram enviados:{0}".format(payload_size))
+                    break
+        if not found_eop:
+            print("ERRO! EOP não encontrado")
+        
+        payload = package
+        return payload
+                
+
+
+
 
 
