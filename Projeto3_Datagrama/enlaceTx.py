@@ -35,11 +35,9 @@ class TX(object):
         """
         while not self.threadStop:
             if(self.threadMutex):
-                self.transLen, finaltime = self.fisica.write(self.buffer)
+                self.transLen = self.fisica.write(self.buffer)
                 #print("O tamanho transmitido. IMpressao dentro do thread {}" .format(self.transLen))
                 self.threadMutex = False
-                print("GGGG")
-                print(finaltime)
 
     def threadStart(self):
         """ Starts TX thread (generate and run)
@@ -101,13 +99,13 @@ class TX(object):
         payload_size = len(payload)
 
         for i in range(len(payload)):
-            
+
             if payload[i:i+3] == eop:
                 p1 = payload[0:i-1]
                 p2 = byte_stuff + payload[i:-1]
                 payload = p1 + p2
 
-        head = (payload_size).to_bytes(12, byteorder = "little")
+        head = (payload_size).to_bytes(12, byteorder = "big")
         package = head + payload + eop
         overhead = len(package) / len(payload)
         print("OverHead:{0}".format(overhead))

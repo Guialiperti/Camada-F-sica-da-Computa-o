@@ -49,12 +49,12 @@ class fisica(object):
     def flush(self):
         """ Clear serial data
         """
-        starttime = time.time()
+        #starttime = time.time()
         self.port.flushInput()
         self.port.flushOutput()
-        finaltime = time.time() - starttime
+        #finaltime = time.time() - starttime
 
-        return finaltime
+        #return finaltime
 
     def encode(self, data):
         """ Encode TX as ASCII data for transmission
@@ -78,8 +78,8 @@ class fisica(object):
         sides of communication.
         """
         nTx = self.port.write(self.encode(txBuffer))
-        finaltime = self.port.flush()
-        return(nTx/2, finaltime)
+        self.port.flush()
+        return(nTx/2)
 
     def read(self, nBytes):
         """ Read nBytes from the UART com port
