@@ -26,7 +26,7 @@ import time
 # se estiver usando windows, o gerenciador de dispositivos informa a porta
 
 #serialName = "/dev/ttyACM0"           # Ubuntu (variacao de)
-serialName = "/dev/tty.usbmodem1451" # Mac    (variacao de)
+serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 #serialName = "COM3"                  # Windows(variacao de)
 baudrate    = 115200
 
@@ -87,13 +87,22 @@ def main(imagem):
         f = imageFile.read()
         img = bytearray(f)
     txBuffer = bytes(img)
+    print(txBuffer)
     txLen    = len(txBuffer)
+
+    # ListTxBuffer = list()
+    # for x in range(0,20):
+    #     ListTxBuffer.append(x)
+    # txBuffer = bytes(ListTxBuffer)
+    # txLen    = len(txBuffer)
+    # print(txLen)
 
     # Transmite dado
     print(" Tamanho da imagem: {0} bytes".format(txLen))
     print("tentado transmitir .... {0} bytes".format(txLen))
     starttime = time.time()
-    com.sendData(txBuffer)
+
+    len_Payload = com.sendData(txBuffer)
 
 
         
@@ -108,6 +117,7 @@ def main(imagem):
     finaltime = time.time() - starttime
     print("Tempo esperado da transmissão : {0} bytes".format(tempo_teorico(txLen,baudrate)))
     print("Tempo da transmissão : {0} segundos".format(finaltime))
+    print("Throughput:{0}".format(len_Payload/finaltime))
     com.disable()
 
     #so roda o main quando for executado do terminal ... se for chamado dentro de outro modulo nao roda

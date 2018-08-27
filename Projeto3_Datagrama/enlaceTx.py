@@ -100,9 +100,9 @@ class TX(object):
 
         for i in range(len(payload)):
 
-            if payload[i:i+3] == eop:
-                p1 = payload[0:i-1]
-                p2 = byte_stuff + payload[i:-1]
+            if payload[i:i+4] == eop:
+                p1 = payload[0:i]
+                p2 = byte_stuff + payload[i:]
                 payload = p1 + p2
 
         head = (payload_size).to_bytes(12, byteorder = "big")
@@ -110,7 +110,8 @@ class TX(object):
         overhead = len(package) / len(payload)
         print("OverHead:{0}".format(overhead))
         print(len(payload))
-        return package
+        print(package)
+        return package, len(payload)
         
 
 

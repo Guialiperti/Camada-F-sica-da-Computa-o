@@ -53,8 +53,11 @@ class enlace(object):
     def sendData(self, data):
         """ Send data over the enlace interface
         """
-        pacote = self.tx.cria_package(data)
+
+        pacote, lenPayload = self.tx.cria_package(data)
         self.tx.sendBuffer(pacote)
+        return lenPayload
+
 
     def getData(self):
         """ Get n data over the enlace interface

@@ -9,6 +9,7 @@
 # Importa pacote de comunicação serial
 import serial
 import time
+import sys
 
 # importa pacote para conversão binário ascii
 import binascii
@@ -101,6 +102,7 @@ class fisica(object):
             nRx = len(rxBuffer)
             return(rxBufferDecoded, nRx)
         except :
+            print ("Unexpected error:", sys.exc_info()[0])
             print("[ERRO] interfaceFisica, read, decode. buffer : {}".format(rxBufferValid))
             return(b"", 0)
 

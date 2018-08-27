@@ -123,32 +123,31 @@ class RX(object):
         found_eop = False
         byte_stuff = bytes.fromhex("AA")
         eop = bytes.fromhex("FF FE FD FC")
-        head = package[0:11]
-        package = package[12:-1]
-        payload_size = int.from_bytes(head[0:3], byteorder = "big")
+        head = package[0:12]
+        print(head)
+        package = package[12:]
+        payload_size = int.from_bytes(head, byteorder = "big")
         for i in range(len(package)):
-            if package[i:i+3] == eop:
+            if package[i:i+4] == eop:
                 if package[i-1] == byte_stuff:
                     #retira os bytes stuff
                     p1 = package[0:i-1]
-                    p2 = package[i:-1]
+                    p2 = package[i:]
                     package = p1 + p2
                 else:
                     found_eop = True
                     print("EOP encontrado na posição:{0}".format(i))
-                    package = package[0:-5]
+                    package = package[0:-4]
                     if len(package) != payload_size:
                         print("ERRO! Número de Bytes do Payload diferentes do informado no HEAD. Bytes Payload recebido:{0}".format(len(package)))
                         print("Bytes que foram enviados:{0}".format(payload_size))
                     break
         if not found_eop:
             print("ERRO! EOP não encontrado")
-        
         payload = package
+        print(len(payload))
         return payload
                 
-
-
 
 
 
