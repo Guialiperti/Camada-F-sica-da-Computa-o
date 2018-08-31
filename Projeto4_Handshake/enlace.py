@@ -84,25 +84,13 @@ class enlace(object):
             payload, tipo, ok = self.rx.desfaz_package(data)
             if tipo == 2 and ok:
                 sync1 = True
-                break
+                break    
             run_time = time.time() - timer
             if run_time > 5.0:
-                print("Erro: sync tipo ")
+                print("Error: not receive type 2 ")
                 self.tx.sendBuffer(sync_package)
                 timer = time.time()
-
-        self.tx.sendBuffer(sync_package3)
-        timer = time.time()
-        while not sync2:
-            data, size = self.rx.getNData()
-            payload, tipo, ok = self.rx.desfaz_package(data)
-            if tipo == 4 and ok:
-                sync2 = True
-                break
-            run_time = time.time() - timer
-            if run_time > 5.0:
-                self.tx.sendBuffer(sync_package3)
-                timer = time.time()
+        self.tx.sendBuffer(sync_package3)     
 
     def server_sync(self):
         sync1 = False
@@ -125,10 +113,49 @@ class enlace(object):
             if tipo == 3 and ok:
                 sync2 = True
                 break
+                
             run_time = time.time() - timer
             if run_time > 5.0:
                 self.tx.sendBuffer(sync_package2)
                 timer = time.time()
+             
+        def client_transmission(self,payload):
+            payloadnulo = (0).to_bytes(1, byteorder = "big")
+            sync_package3 = self.tx.cria_package(payloadnulo, 3)
+            sync_package4 = self.tx.cria_package(payload, 4)
+            sync_package5 = self.tx.cria_package(payloadnulo, 5)
+            sync_package6 = self.tx.cria_package(payloadnulo, 6)
+            self.tx.sendBuffer(sync_package4)
+            sync1 = False
+            while not sync1:
+                data, size = self.rx.getNData()
+                payload, tipo, ok, = self.rx.desfaz_package(data)
+                if tipo == 2:
+                    self.tx.sendBuffer(sync_package3)
+                    self.tx.sendBuffer(sync_package4)
+                elif tipo = 4:
+                    print("Erro 1: Não recebimento da mensagem 5 ou 6.")
+                    self.tx.sendBuffer(sync_package4)
+                elif tipo == 5:
+                    sync1 = True
+                elif tipo == 6:
+                    self.tx.sendBuffer(sync_package4)
+                    
+
+        def server_transmission(self):
+            payloadnulo = (0).to_bytes(1, byteorder = "big")
+            sync_package5 = self.tx.cria_package(payloadnulo, 5)
+            sync_package6 = self.tx.cria_package(payloadnulo, 6)
+            sync1 = False
+            while not sync1:
+                data, size = self.rx.getNData()
+                payload, tipo, ok, = self.rx.desfaz_package(data)
+                if tipo == 4 and ok:
+                    self.tx.sendBuffer(sync_package5)
+                    sync1 = True
+                elif tipo == 4 and not ok:
+                    self.tx.sendBuffer(sync_package6) 
+                    sync1 = True 
         
             
 
