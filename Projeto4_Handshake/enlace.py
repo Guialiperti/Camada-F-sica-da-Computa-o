@@ -87,9 +87,10 @@ class enlace(object):
             if tipo == 2 and ok:
                 sync1 = True
                 print("recebeu tipo 2")
-                break    
+                break
+
             run_time = time.time() - timer
-            if run_time > 5.0:
+            if run_time > 5:
                 print("Error: not receive type 2 ")
                 self.tx.sendBuffer(sync_package)
                 print("Enviando tipo 1")
