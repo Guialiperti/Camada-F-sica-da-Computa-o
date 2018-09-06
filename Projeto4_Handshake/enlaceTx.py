@@ -111,7 +111,7 @@ class TX(object):
         overhead = len(package) / len(payload)
         print("OverHead:{0}".format(overhead))
         print(len(payload))
-        return package, len(payload)
+        return package
         
 
 

@@ -50,14 +50,14 @@ class enlace(object):
     ################################
     # Application  interface       #
     ################################
+
+
     def sendData(self, data):
         """ Send data over the enlace interface
         """
         self.client_sync()
         self.client_transmission(data)
         self.client_encerramento()
-
-
 
 
     def getData(self):
@@ -78,7 +78,7 @@ class enlace(object):
         payload = (0).to_bytes(1, byteorder = "big")
         sync_package = self.tx.cria_package(payload, 1)
         sync_package3 = self.tx.cria_package(payload, 3)
-
+        print(sync_package)
         self.tx.sendBuffer(sync_package)
         timer = time.time()
         while not sync1:
@@ -86,11 +86,13 @@ class enlace(object):
             payload, tipo, ok = self.rx.desfaz_package(data)
             if tipo == 2 and ok:
                 sync1 = True
+                print("recebeu tipo 2")
                 break    
             run_time = time.time() - timer
             if run_time > 5.0:
                 print("Error: not receive type 2 ")
                 self.tx.sendBuffer(sync_package)
+                print("Enviando tipo 1")
                 timer = time.time()
 
         self.tx.sendBuffer(sync_package3)
@@ -100,9 +102,11 @@ class enlace(object):
             payload, tipo, ok = self.rx.desfaz_package(data)
             if tipo == 40 and ok:
                 sync2 = True
+                print("recebeu tipo 40")
                 break
             run_time = time.time() - timer
             if run_time > 5.0:
+                print("mandou tipo 3")
                 self.tx.sendBuffer(sync_package3)
                 timer = time.time()
 
@@ -119,6 +123,7 @@ class enlace(object):
             payload, tipo, ok, = self.rx.desfaz_package(data)
             if tipo == 1 and ok:
                 sync1 = True
+                print("recebeu tipo 1")
                 break
 
         self.tx.sendBuffer(sync_package2)
@@ -128,12 +133,14 @@ class enlace(object):
             payload, tipo, ok = self.rx.desfaz_package(data)
             if tipo == 3 and ok:
                 sync2 = True
+                print("recebeu tipo 3")
                 break
 
             run_time = time.time() - timer
             if run_time > 5.0:
                 print("Erro: Type 3 note received")
                 self.tx.sendBuffer(sync_package2)
+                print("mandou tipo 2")
                 timer = time.time()
         self.tx.sendBuffer(sync_package40)
 
@@ -148,13 +155,17 @@ class enlace(object):
                 payload, tipo, ok = self.rx.desfaz_package(data)
                 if tipo == 5 and ok:
                     sync1 = True
+                    print("recebeu tipo 5")
                     break
                 elif tipo == 6 and ok:
                     self.tx.sendBuffer(sync_package4)
+                    print("recebeu tipo 6")
+                    timer = time.time
 
                 run_time = time.time() - timer
                 if run_time > 5.0:
                     print("Erro: type 5 or 6 not received")
+                    print("mandou tipo 4")
                     self.tx.sendBuffer(sync_package4)
                     timer = time.time()
 
@@ -171,16 +182,19 @@ class enlace(object):
                 if tipo == 4 and ok:
                     self.tx.sendBuffer(sync_package5)
                     sync1 = True
+                    print("recebeu tipo 4 CORRETO, ENVIA 5")
                     break
                 elif tipo == 4 and not ok:
                     self.tx.sendBuffer(sync_package6) 
+                    print("Recebeu tipo 4 INCORRETO, Envia 6")
                     sync1 = True 
             return payload
                 
 
-        def client_encerramento(self)
+        def client_encerramento(self):
             payloadnulo = (0).to_bytes(1, byteorder = "big")
             sync_package7 = self.tx.cria_package(payloadnulo, 7)
+            print("eviou tipo 7")
 
         def server_encerramento(self):
             encerra = False
@@ -188,6 +202,7 @@ class enlace(object):
                 data, size = self.rx.getNData()
                 payload, tipo, ok = self.rx.desfaz_package(data)
                 if tipo == 7:
+                    print("recebeu tipo 7, conexao encerrada")
                     break
 
 
