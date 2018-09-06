@@ -102,7 +102,7 @@ def main(imagem):
     print("tentado transmitir .... {0} bytes".format(txLen))
     starttime = time.time()
 
-    len_Payload = com.sendData(txBuffer)
+    com.sendData(txBuffer)
 
 
         
@@ -117,7 +117,6 @@ def main(imagem):
     finaltime = time.time() - starttime
     print("Tempo esperado da transmissão : {0} bytes".format(tempo_teorico(txLen,baudrate)))
     print("Tempo da transmissão : {0} segundos".format(finaltime))
-    print("Throughput:{0}".format(len_Payload/finaltime))
     com.disable()
 
     #so roda o main quando for executado do terminal ... se for chamado dentro de outro modulo nao roda
