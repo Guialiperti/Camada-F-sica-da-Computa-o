@@ -91,7 +91,7 @@ class TX(object):
         """
         return(self.threadMutex)
 
-    def cria_package(self, payload, tipo):
+    def cria_package(self, payload, tipo, n_pacote, total_pacotes, pacote_esperado):
         #pega os dados e empacota com HEAD, EOP e byte Stuffing
 
         byte_stuff = bytes.fromhex("AA")
@@ -104,9 +104,13 @@ class TX(object):
                 p1 = payload[0:i]
                 p2 = byte_stuff + payload[i:]
                 payload = p1 + p2
+
         msg_type = (tipo).to_bytes(1, byteorder = "big")
         msg_size = (payload_size).to_bytes(3, byteorder = "big")
-        head = msg_type + msg_size
+        msg_n = (n_pacote).to_bytes(1, byteorder = "big")
+        total_n = (total_pacotes).to_bytes(1, byteorder = "big")
+        pacote_e = (pacote_esperado).to_bytes(1, byteorder = "big")
+        head = msg_type + msg_size + msg_n + total_n + pacote_e
         package = head + payload + eop
         overhead = len(package) / len(payload)
         print("OverHead:{0}".format(overhead))

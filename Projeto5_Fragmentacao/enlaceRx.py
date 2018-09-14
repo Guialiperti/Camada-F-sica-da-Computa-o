@@ -106,7 +106,6 @@ class RX(object):
         size = 0
         time_out = time.time()
         package_arbitrario = bytes.fromhex("F5 A3 AA C3 C3 B5 B4")
-        print(package_arbitrario)
 
         while(self.getBufferLen() > size or self.getBufferLen() == 0):
             time.sleep(0.5)
@@ -131,10 +130,14 @@ class RX(object):
         found_eop = False
         byte_stuff = bytes.fromhex("AA")
         eop = bytes.fromhex("FF FE FD FC")
-        head = package[0:4]
+        head = package[0:7]
         tipo = int(head[0])
-        package = package[4:]
-        payload_size = int.from_bytes(head[1:], byteorder = "big")
+        n_pacote = int(head[4])
+        total_pacotes = int(head[5])
+        pacote_esperado = int(head[6])
+        package = package[7:]
+        payload_size = int.from_bytes(head[1:4], byteorder = "big")
+
         for i in range(len(package)):
             if package[i:i+4] == eop:
                 if package[i-1] == byte_stuff:
@@ -156,7 +159,7 @@ class RX(object):
             print("ERRO! EOP não encontrado")
         payload = package
         print(len(payload))
-        return payload, tipo, ok
+        return payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado
 
 
                 

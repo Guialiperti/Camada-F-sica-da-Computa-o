@@ -173,7 +173,6 @@ class enlace(object):
 
     def server_transmission(self):
         payloadnulo = (0).to_bytes(1, byteorder = "big")
-        sync_package40 = self.tx.cria_package(payloadnulo, 40)
         sync_package5 = self.tx.cria_package(payloadnulo, 5)
         sync_package6 = self.tx.cria_package(payloadnulo, 6)
         sync1 = False
