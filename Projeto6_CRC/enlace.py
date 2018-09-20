@@ -168,6 +168,7 @@ class enlace(object):
                 elif tipo == 8 and ok:
                     sync_package8 = self.tx.cria_package(lista_pacotes[pacote_esperado], 4, pacote_esperado, n_total, 0)
                     self.tx.sendBuffer(sync_package8)
+                    print("Recebeu 8 deve enviar{0}".format(pacote_esperado))
 
                 run_time = time.time() - timer
                 if run_time > 4:
@@ -191,6 +192,8 @@ class enlace(object):
               #  while True:
                ##     sync_package8 = self.tx.cria_package(payloadnulo, 8, 0, 0, pacote_davez)
                  #   self.tx.sendBuffer(sync_package8)
+            if n_pacote == 7:
+                n_pacote = 8
 
             if tipo == 4 and ok:
                 if n_pacote != pacote_davez:
