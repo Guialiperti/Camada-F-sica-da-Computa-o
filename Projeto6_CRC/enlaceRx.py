@@ -12,6 +12,7 @@ import time
 
 # Threads
 import threading
+from crc import CRC
 
 # Class
 class RX(object):
@@ -27,6 +28,7 @@ class RX(object):
         self.threadStop  = False
         self.threadMutex = True
         self.READLEN     = 1024
+        self.crc = CRC()
 
     def thread(self): 
         """ RX thread, to send data in parallel with the code
@@ -130,12 +132,13 @@ class RX(object):
         found_eop = False
         byte_stuff = bytes.fromhex("AA")
         eop = bytes.fromhex("FF FE FD FC")
-        head = package[0:7]
+        head = package[0:10]
         tipo = int(head[0])
         n_pacote = int(head[4])
         total_pacotes = int(head[5])
         pacote_esperado = int(head[6])
-        package = package[7:]
+        crc_chegou = int.from_bytes(head[7:], byteorder = "big")
+        package = package[10:]
         payload_size = int.from_bytes(head[1:4], byteorder = "big")
 
         for i in range(len(package)):
@@ -157,9 +160,17 @@ class RX(object):
         if not found_eop:
             ok = False
             print("ERRO! EOP não encontrado")
+
         payload = package
+        crc_calculado = self.crc.encodeData(payload)
+        crc_calculado = int(crc_calculado, 2)
+        if crc_calculado == crc_chegou:
+            encoding = True
+        else:
+            encoding = False
+
         print(len(payload))
-        return payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado
+        return payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding
 
 
                 

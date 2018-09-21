@@ -12,6 +12,7 @@ import time
 
 # Threads
 import threading
+from crc import CRC
 
 # Class
 class TX(object):
@@ -28,6 +29,7 @@ class TX(object):
         self.empty       = True
         self.threadMutex = False
         self.threadStop  = False
+        self.crc = CRC()
 
 
     def thread(self):
@@ -97,6 +99,8 @@ class TX(object):
         byte_stuff = bytes.fromhex("AA")
         eop = bytes.fromhex("FF FE FD FC")
         payload_size = len(payload)
+        crc_payload = self.crc.encodeData(payload)
+        crc_payload = int(crc_payload, 2)
 
         for i in range(len(payload)):
 
@@ -110,7 +114,8 @@ class TX(object):
         msg_n = (n_pacote).to_bytes(1, byteorder = "big")
         total_n = (total_pacotes).to_bytes(1, byteorder = "big")
         pacote_e = (pacote_esperado).to_bytes(1, byteorder = "big")
-        head = msg_type + msg_size + msg_n + total_n + pacote_e
+        msg_crc = (crc_payload).to_bytes(3, byteorder = "big")
+        head = msg_type + msg_size + msg_n + total_n + pacote_e + msg_crc
         package = head + payload + eop
         overhead = len(package) / len(payload)
         print("OverHead:{0}".format(overhead))

@@ -19,6 +19,7 @@ from interfaceFisica import fisica
 # enlace Tx e Rx
 from enlaceRx import RX
 from enlaceTx import TX
+from crc import CRC
 
 class enlace(object):
     """ This class implements methods to the interface between Enlace and Application
@@ -31,6 +32,7 @@ class enlace(object):
         self.rx          = RX(self.fisica)
         self.tx          = TX(self.fisica)
         self.connected   = False
+        self.crc = CRC()
 
     def enable(self):
         """ Enable reception and transmission
@@ -83,7 +85,7 @@ class enlace(object):
         timer = time.time()
         while not sync1:
             data, size = self.rx.getNData()
-            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado = self.rx.desfaz_package(data)
+            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding = self.rx.desfaz_package(data)
             if tipo == 2 and ok:
                 sync1 = True
                 print("recebeu tipo 2")
@@ -99,7 +101,7 @@ class enlace(object):
         timer = time.time()
         while not sync2:
             data, size = self.rx.getNData()
-            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado = self.rx.desfaz_package(data)
+            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding = self.rx.desfaz_package(data)
             if tipo == 40 and ok:
                 sync2 = True
                 print("recebeu tipo 40")
@@ -120,7 +122,7 @@ class enlace(object):
 
         while not sync1:
             data, size = self.rx.getNData()
-            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado = self.rx.desfaz_package(data)
+            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding = self.rx.desfaz_package(data)
             if tipo == 1 and ok:
                 sync1 = True
                 print("recebeu tipo 1")
@@ -131,7 +133,7 @@ class enlace(object):
         timer = time.time()
         while not sync2:
             data, size = self.rx.getNData()
-            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado = self.rx.desfaz_package(data)
+            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding = self.rx.desfaz_package(data)
             if tipo == 3 and ok:
                 sync2 = True
                 print("recebeu tipo 3")
@@ -155,7 +157,7 @@ class enlace(object):
             print("Mandou o pacote {0}/{1}".format(i+1, len(lista_pacotes)))
             while True:
                 data, size = self.rx.getNData()
-                payload, tipo, ok, n_pacote, n_total, pacote_esperado  = self.rx.desfaz_package(data)
+                payload, tipo, ok, n_pacote, n_total, pacote_esperado, encoding  = self.rx.desfaz_package(data)
                 if tipo == 5 and ok:
                     sync1 = True
                     print("recebeu tipo 5")
@@ -169,6 +171,10 @@ class enlace(object):
                     sync_package8 = self.tx.cria_package(lista_pacotes[pacote_esperado], 4, pacote_esperado, n_total, 0)
                     self.tx.sendBuffer(sync_package8)
                     print("Recebeu 8 deve enviar{0}".format(pacote_esperado))
+                
+                elif tipo == 9 and ok:
+                    self.tx.sendBuffer(sync_package4)
+                    print("Erro: CRC diferente do do HEAD, reenvia pacote {0}".format(i+1))
 
                 run_time = time.time() - timer
                 if run_time > 4:
@@ -183,27 +189,33 @@ class enlace(object):
         sync_package6 = self.tx.cria_package(payloadnulo, 6, 0, 0, 0)
         lista_fragmentada = []
         pacote_davez = 1
+        bug = True
         while True:
             data, size = self.rx.getNData()
-            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado = self.rx.desfaz_package(data)
+            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding = self.rx.desfaz_package(data)
+            if bug and n_pacote == 7:
+                encoding = False
+                bug = False
 
             #if n_pacote != pacote_davez:
              #   print("ERRO: Deveria ter recebido {0} e recebeu {1}".format(pacote_davez, n_pacote)) 
               #  while True:
                ##     sync_package8 = self.tx.cria_package(payloadnulo, 8, 0, 0, pacote_davez)
                  #   self.tx.sendBuffer(sync_package8)
-            if n_pacote == 7:
-                n_pacote = 8
+            if tipo == 4 and not encoding:
+                sync_package9 = self.tx.cria_package(payloadnulo, 9, 0, 0, 0)
+                print("Recebey tipo 4 CRC NAO bate, envia 9")
+                self.tx.sendBuffer(sync_package9)
 
-            if tipo == 4 and ok:
+            elif tipo == 4 and ok:
                 if n_pacote != pacote_davez:
                     print("ERRO: Deveria ter recebido {0} e recebeu {1}".format(pacote_davez, n_pacote)) 
                     sync_package8 = self.tx.cria_package(payloadnulo, 8, 0, 0, pacote_davez)
                     self.tx.sendBuffer(sync_package8)
                     timer = time.time()
                     while True:
-                        payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado = self.rx.desfaz_package(data)
-                        if tipo == 4 and ok:
+                        payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding = self.rx.desfaz_package(data)
+                        if tipo == 4 and n_pacote == pacote_davez:
                             break
                         run_time = time.time() - timer
                         if run_time > 5:
@@ -221,6 +233,7 @@ class enlace(object):
             elif tipo == 4 and not ok:
                 self.tx.sendBuffer(sync_package6) 
                 print("Recebeu tipo 4 INCORRETO, Envia 6")
+                
             
 
 
@@ -235,7 +248,7 @@ class enlace(object):
                 
 
     def client_encerramento(self):
-        time.sleep(4)
+        time.sleep(3)
         payloadnulo = (0).to_bytes(1, byteorder = "big")
         sync_package7 = self.tx.cria_package(payloadnulo, 7, 0, 0, 0)
         print("enviou tipo 7")
@@ -247,12 +260,12 @@ class enlace(object):
         timer = time.time()
         while not encerra:
             data, size = self.rx.getNData()
-            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado  = self.rx.desfaz_package(data)
+            payload, tipo, ok, n_pacote, total_pacotes, pacote_esperado, encoding  = self.rx.desfaz_package(data)
             if tipo == 7:
                 print("recebeu tipo 7, conexao encerrada")
                 break
             run_time = time.time() - timer
-            if run_time > 10:
+            if run_time > 7:
                 break
 
     def separa_pacotes(self, data):
