@@ -36,7 +36,7 @@ def som(list):
 
     plt.close("all")
     plt.plot(time, soma)
-    plt.xlim(0,0.015)
+    plt.xlim(0,0.025)
     plt.xlabel('tempo')
     plt.ylabel('Onda')
     sd.play(soma, fs)

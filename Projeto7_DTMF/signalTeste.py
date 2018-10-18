@@ -32,10 +32,7 @@ class signalMeu:
         plt.plot(x, np.abs(y))
         plt.title('Fourier')
         plt.xlim(0,1600)
-        plt.show()
-
-        return x, y
-        
+        plt.show()        
 
 
 
