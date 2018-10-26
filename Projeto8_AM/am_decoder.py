@@ -2,6 +2,7 @@ import numpy as np
 import soundfile as sf
 import sounddevice as sd
 import matplotlib.pyplot as plt
+import scipy.io.wavfile
 from scipy import signal
 from signalTeste import *
 
@@ -39,6 +40,7 @@ def record():
     return audiozeras
 
 data = record()
+scipy.io.wavfile.write('kevinModulado.wav',fs,data)
 signalMeu = signalMeu()
 #data, samplerate = sf.read('kevinModulado.wav')
 tempo_audio = len(data)/44100
@@ -50,6 +52,7 @@ demodulate = data * carrier
 
 finalsignal = filtra_sinal(demodulate,fs)
 sd.play(finalsignal,fs)
+
 
 plt.plot(time,finalsignal)
 plt.title("Demodulated data")

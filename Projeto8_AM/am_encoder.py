@@ -71,24 +71,24 @@ sd.wait()
 #PLOTS
 plt.plot(t, raw_data)
 plt.title("Raw data")
-#plt.show()
-#signalMeu.plotFFT(raw_data, fs)
+plt.show()
+signalMeu.plotFFT(raw_data, fs)
 
 plt.plot(t, normalized_data)
 plt.title("Normalized data")
-#plt.show()
-#signalMeu.plotFFT(normalized_data, fs)
+plt.show()
+signalMeu.plotFFT(normalized_data, fs)
 
 plt.plot(t, f_signal)
 plt.title("Filtered signal")
-#plt.show()
-#signalMeu.plotFFT(f_signal, fs)
+plt.show()
+signalMeu.plotFFT(f_signal, fs)
 
 
 plt.plot(t,modulated_signal)
 plt.title("Modulated data")
 #plt.xlim(1.0, 1.25)
-#plt.show()
-#signalMeu.plotFFT(modulated_signal, fs)
+plt.show()
+signalMeu.plotFFT(modulated_signal, fs)
 
 
