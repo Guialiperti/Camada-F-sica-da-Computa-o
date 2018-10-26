@@ -24,3 +24,7 @@ def filtra_sinal(data, samplerate):
 
 def record():
     duration = 10
+    audio = sd.rec(int(duration*fs), fs, channels=1)
+    sd.wait()
+    y = audio[:,0]
+  
