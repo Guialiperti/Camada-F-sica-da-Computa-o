@@ -2,6 +2,7 @@ import numpy as np
 import soundfile as sf
 import sounddevice as sd
 import matplotlib.pyplot as plt
+import scipy.io.wavfile
 from scipy import signal
 from signalTeste import *
 
@@ -56,6 +57,7 @@ carrier, timez = generateSin(f_carrier, tempo_audio)
 
 modulated_signal = carrier*f_signal
 sd.play(modulated_signal,fs)
+scipy.io.wavfile.write('kevinModulado.wav',samplerate,modulated_signal)
 
 
 
