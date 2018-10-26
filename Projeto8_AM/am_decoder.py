@@ -8,7 +8,7 @@ from scipy import signal
 cutoff_hz = 4000.0
 ripple_db = 60.0 #dB
 t = 9 #tempo de duração da gravação
-f_carrier = 4000.0 #Hz
+f_carrier = 14000.0 #Hz
 fs = 44100
 
 ##########################
@@ -27,4 +27,3 @@ def record():
     audio = sd.rec(int(duration*fs), fs, channels=1)
     sd.wait()
     y = audio[:,0]
-  
