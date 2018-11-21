@@ -9,13 +9,12 @@ class Application(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        
-        self.selectbutton = tk.Button(self, text="Selecionar imagem", fg="black",
-                              command=self.selectimage)
+         
+        self.selectbutton = tk.Entry(self, fg="black")
 
         self.selectbutton.pack(side="top")              
 
-        self.sendbutton = tk.Button(self, text="Enviar imagem", fg="black",
+        self.sendbutton = tk.Button(self, text="Enviar texto", fg="black",
                               command=self.sendimage)
         self.sendbutton.pack(side="top")
 
@@ -26,6 +25,10 @@ class Application(tk.Frame):
     def selectimage(self):
         self.filename = askopenfilename() 
         print("Imagem selecionada")   
+        
+    def sendimage(self):
+        root.destroy()
+        print("Mensagem enviada")
 
 if __name__ == "__main__":
     root = tk.Tk()
