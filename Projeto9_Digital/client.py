@@ -29,7 +29,7 @@ class Application(tk.Frame):
     def sendtext(self):
         message = self.entermessage.get()
         message = message.encode('utf-8')
-        s.send(message)
+        self.s.send(message)
         print("Mensagem enviada")
 
 if __name__ == "__main__":
