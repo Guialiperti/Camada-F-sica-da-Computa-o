@@ -9,8 +9,8 @@ from signalTeste import *
 #Configurações iniciais
 cutoff_hz = 4000.0
 ripple_db = 60.0 #dB
-t = 9 #tempo de duração da gravação
-f_carrier = 14000.0 #MHz
+#t = 9 #tempo de duração da gravação
+f_carrier = 14000.0 #Hz
 fs = 44100
 
 ##########################
@@ -46,7 +46,7 @@ def filtra_sinal(data, samplerate):
 signalMeu = signalMeu()
 data, samplerate = sf.read('elikevin.wav')
 raw_data = data[:,0]
-tempo_audio = len(raw_data)/44100
+tempo_audio = len(raw_data)/fs
 t = np.linspace(0,tempo_audio,len(raw_data))
 
 normalized_data = normalize(raw_data)
@@ -54,7 +54,6 @@ normalized_data = normalize(raw_data)
 f_signal = filtra_sinal(normalized_data, samplerate)
 
 carrier, timez = generateSin(f_carrier, tempo_audio)
-duration = tempo_audio
 modulated_signal = carrier*f_signal
 
 sd.play(modulated_signal,fs)
